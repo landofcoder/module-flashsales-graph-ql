@@ -1,0 +1,16 @@
+#@copyright Copyright © 2021 Landofcoder. All rights reserved.
+#@author    landofcoder@gmail.com
+
+type Query {
+    lofFlashSalesById(
+        flashsales_id: String @doc(description: "flashsales Id of the Flash Sale")
+    ): FlashSale @resolver(class: "\\Lof\\FlashSalesGraphQl\\Model\\Resolver\\FlashSaleById") @doc(description: "The Flash sale query returns information about Flash sale")
+
+}
+
+type FlashSale @doc(description: "Flash Sale defines all Flash Sale information") {
+    flashsales_id: String @doc(description: "Flash Sale Id")
+    event_name: String @doc(description: "Event Name")
+    is_active: String @doc(description: "Is Active")
+    status: String @doc(description: "Status")
+}
