@@ -10,11 +10,14 @@ namespace Lof\FlashSalesGraphQl\Model\Resolver\DataProvider;
 
 use Lof\FlashSales\Api\FlashSalesRepositoryInterface;
 use Lof\FlashSales\Api\Data\FlashSalesInterface;
-use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Store\Model\Store;
-use Magento\Widget\Model\Template\FilterEmulate;
+use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\Builder;
 
+/**
+ * Class FlashSale
+ * @package Lof\FlashSalesGraphQl\Model\Resolver\DataProvider
+ */
 class FlashSale
 {
     /**
@@ -23,74 +26,73 @@ class FlashSale
     private $flashsalesRepository;
 
     /**
-     * @var FilterEmulate
+     * @var Builder
      */
-    private $widgetFilter;
-
-    /**
-     * @var SearchCriteriaBuilder
-     */
-    private $searchCriteriaBuilder;
+    private $builder;
 
     /**
      * @param FlashSalesRepositoryInterface $flashsalesRepository
-     * @param FilterEmulate $widgetFilter
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param Builder $builder
      */
     public function __construct(
         FlashSalesRepositoryInterface $flashsalesRepository,
-        FilterEmulate $widgetFilter,
-        SearchCriteriaBuilder $searchCriteriaBuilder
+        Builder $builder
     ) {
+        $this->builder = $builder;
         $this->flashsalesRepository = $flashsalesRepository;
-        $this->widgetFilter = $widgetFilter;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+    }
+
+    public function getFlashSales($args)
+    {
+        $searchCriteria = $this->builder->build('FlashSales', $args);
+        $searchCriteria->setCurrentPage($args['currentPage']);
+        $searchCriteria->setPageSize($args['pageSize']);
+
+        return $this->flashsalesRepository->getList($searchCriteria);
     }
 
     /**
-     * Get flash sales data by flashsales_id
-     *
-     * @param int $flashsalesId
-     * @param int $storeId
+     * Fetch black data by either id or Flash Sale ID field
+     * @param int $flashSaleId
      * @return array
+     * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    public function getFlashSaleById(int $flashsalesId, int $storeId): array
+    public function getFlashSaleById(int $flashSaleId)
     {
-        $flashSaleData = $this->fetchFlashSaleData($flashsalesId, FlashSalesInterface::FLASHSALES_ID, $storeId);
-
-        return $flashSaleData;
+        $flashSale = $this->flashsalesRepository->get($flashSaleId);
+        return $this->convertFlashSaleData($flashSale);
     }
 
-    /**
-     * Fetch black data by either id or identifier field
-     *
-     * @param mixed $flashsalesId
-     * @param string $field
-     * @param int $storeId
-     * @return array
-     * @throws NoSuchEntityException
-     */
-    private function fetchFlashSaleData($flashsalesId, string $field, int $storeId): array
+    private function convertFlashSaleData(FlashSalesInterface $flashSale)
     {
-        $searchCriteria = $this->searchCriteriaBuilder
-            ->addFilter($field, $flashsalesId)
-            ->addFilter(Store::STORE_ID, [$storeId, Store::DEFAULT_STORE_ID], 'in')
-            ->addFilter(FlashSalesInterface::IS_ACTIVE, true)->create();
-
-        $flashSaleResults = $this->flashsalesRepository->getList($searchCriteria)->getItems();
-
-        if (empty($flashSaleResults)) {
-            throw new NoSuchEntityException(
-                __('The Flash Sale with the "%1" ID doesn\'t exist.', $flashsalesId)
-            );
-        }
-        $block = current($flashSaleResults);
         return [
-            FlashSalesInterface::FLASHSALES_ID => $block->getFlashsalesId(),
-            FlashSalesInterface::EVENT_NAME => $block->getEventName(),
-            FlashSalesInterface::STATUS => $block->getStatus(),
+            FlashSalesInterface::FLASHSALES_ID => $flashSale->getFlashsalesId(),
+            FlashSalesInterface::EVENT_NAME => $flashSale->getEventName(),
+            FlashSalesInterface::STATUS => $flashSale->getStatus(),
+            FlashSalesInterface::CONDITIONS_SERIALIZED => $flashSale->getConditionsSerialized(),
+            FlashSalesInterface::CATEGORY_ID => $flashSale->getCategoryId(),
+            FlashSalesInterface::IS_PRIVATE_SALE => $flashSale->getIsPrivateSale(),
+            FlashSalesInterface::FROM_DATE => $flashSale->getFromDate(),
+            FlashSalesInterface::TO_DATE => $flashSale->getToDate(),
+            FlashSalesInterface::CREATED_AT => $flashSale->getCreatedAt(),
+            FlashSalesInterface::UPDATED_AT => $flashSale->getUpdatedAt(),
+            FlashSalesInterface::DISPLAY_CART_MODE => $flashSale->getDisplayCartMode(),
+            FlashSalesInterface::HEADER_BANNER_IMAGE => $flashSale->getHeaderBannerImage(),
+            FlashSalesInterface::IS_DEFAULT_PRIVATE_CONFIG => $flashSale->getIsDefaultPrivateConfig(),
+            FlashSalesInterface::CART_BUTTON_TITLE => $flashSale->getCartButtonTitle(),
+            FlashSalesInterface::RESTRICTED_LANDING_PAGE => $flashSale->getRestrictedEventLandingPage(),
+            FlashSalesInterface::GRANT_CHECKOUT_ITEMS => $flashSale->getGrantCheckoutItems(),
+            FlashSalesInterface::GRANT_CHECKOUT_ITEMS_GROUPS => $flashSale->getGrantCheckoutItemsGroups(),
+            FlashSalesInterface::GRANT_EVENT_PRODUCT_PRICE => $flashSale->getGrantEventProductPrice(),
+            FlashSalesInterface::GRANT_EVENT_PRODUCT_PRICE_GROUPS => $flashSale->getGrantEventProductPriceGroups(),
+            FlashSalesInterface::GRANT_EVENT_VIEW => $flashSale->getGrantEventView(),
+            FlashSalesInterface::GRANT_EVENT_VIEW_GROUPS => $flashSale->getGrantEventViewGroups(),
+            FlashSalesInterface::IS_ACTIVE => $flashSale->getIsActive(),
+            FlashSalesInterface::MESSAGE_HIDDEN_ADD_TO_CART => $flashSale->getMessageHiddenAddToCart(),
+            FlashSalesInterface::DISPLAY_PRODUCT_MODE => $flashSale->getDisplayProductMode(),
+            FlashSalesInterface::SORT_ORDER => $flashSale->getSortOrder(),
+            FlashSalesInterface::THUMBNAIL_IMAGE => $flashSale->getThumbnailImage(),
         ];
     }
-
 }

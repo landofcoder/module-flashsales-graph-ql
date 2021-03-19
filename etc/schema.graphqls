@@ -3,14 +3,53 @@
 
 type Query {
     lofFlashSalesById(
-        flashsales_id: String @doc(description: "flashsales Id of the Flash Sale")
+        flashsales_id: Int @doc(description: "Flash sale Id of the Flash Sale")
     ): FlashSale @resolver(class: "\\Lof\\FlashSalesGraphQl\\Model\\Resolver\\FlashSaleById") @doc(description: "The Flash sale query returns information about Flash sale")
 
+    lofFlashSales(
+        filter: FlashSaleFilterInput @doc(description: "Identifies which question attributes to search for and return."),
+        pageSize: Int = 5 @doc(description: "Specifies the maximum number of results to return at once. This attribute is optional."),
+        currentPage: Int = 1 @doc(description: "Specifies which page of results to return. The default value is 1."),
+    ):FlashSales @resolver(class: "\\Lof\\FlashSalesGraphQl\\Model\\Resolver\\FlashSales") @doc(description: "The Flash sales query searches for Flash sales that match the criteria specified in the search and filter attributes")
 }
 
 type FlashSale @doc(description: "Flash Sale defines all Flash Sale information") {
     flashsales_id: String @doc(description: "Flash Sale Id")
     event_name: String @doc(description: "Event Name")
+    from_date: String @doc(description: "From Date")
+    to_date: String @doc(description: "To Date")
+    sort_order: String @doc(description: "Sort Order")
+    updated_at: String @doc(description: "Updated At")
+    created_at: String @doc(description: "Created At")
+    conditions_serialized: String @doc(description: "Conditions Serialized")
+    category_id: String @doc(description: "Category ID")
+    is_private_sale: String @doc(description: "Is Private Sale")
+    thumbnail_image: String @doc(description: "Thumbnail Image")
+    header_banner_image: String @doc(description: "Header Banner Image")
+    is_default_private_config:String @doc(description: "Is Default Private Config")
+    restricted_landing_page: String @doc(description: "Restricted Landing Page")
+    grant_event_view: String @doc(description: "Grant Event View")
+    grant_event_product_price: String @doc(description: "Grant Event Product Price")
+    grant_checkout_items: String @doc(description: "Grant Checkout Items")
+    grant_checkout_items_groups: String @doc(description: "Grant Checkout Items Groups")
+    grant_event_view_groups: String @doc(description: "Grant Event View Groups")
+    grant_event_product_price_groups: String @doc(description: "Grant Event Product Price Groups")
+    display_cart_mode: String @doc(description: "Display Cart Mode")
+    display_product_mode: String @doc(description: "Display Product Mode")
+    cart_button_title: String @doc(description: "Cart Button Title")
+    message_hidden_add_to_cart: String @doc(description: "Message Hidden Add To Cart")
     is_active: String @doc(description: "Is Active")
     status: String @doc(description: "Status")
+}
+
+type FlashSales @doc(description: "Flash Sales defines all Flash Sales information") {
+    total_count: Int @doc(description: "The number of Flash Sales returned")
+    items: [FlashSale] @doc(description: "An array of Flash Sales that match the specified search criteria")
+}
+
+input FlashSaleFilterInput {
+    flashsales_id: FilterTypeInput @doc(description: "Flash Sale ID")
+    event_name: FilterTypeInput @doc(description: "Name")
+    status: FilterTypeInput @doc(description: "Status")
+    or: FlashSaleFilterInput @doc(description: "The keyword required to perform a logical OR comparison")
 }
