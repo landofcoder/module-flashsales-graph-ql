@@ -1,6 +1,5 @@
 #@copyright Copyright © 2021 Landofcoder. All rights reserved.
 #@author    landofcoder@gmail.com
-
 type Query {
     lofFlashSalesById(
         flashsales_id: Int @doc(description: "Flash sale Id of the Flash Sale")
