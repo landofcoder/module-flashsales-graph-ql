@@ -8,11 +8,16 @@
 namespace Lof\FlashSalesGraphQl\Model\Resolver;
 
 use Lof\FlashSalesGraphQl\Model\Resolver\DataProvider\FlashSale as FlashSaleDataProvider;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 
-
+/**
+ * Class FlashSales
+ * @package Lof\FlashSalesGraphQl\Model\Resolver
+ */
 class FlashSales implements ResolverInterface
 {
     /**
@@ -42,7 +47,25 @@ class FlashSales implements ResolverInterface
         $searchResult = $this->flashSaleDataProvider->getFlashSales($args);
         return [
             'total_count' => $searchResult->getTotalCount(),
-            'items'       => $searchResult->getItems(),
+            'items'       => $this->getFlashSalesData($searchResult->getItems()),
         ];
+    }
+
+    /**
+     * @param $flashSales
+     * @return array
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
+     */
+    private function getFlashSalesData($flashSales)
+    {
+        $flashSalesData = [];
+        foreach ($flashSales as $flashSale) {
+            if (!is_numeric($flashSale)) {
+                $flashSalesData[$flashSale->getFlashSalesId()] =
+                    $this->flashSaleDataProvider->getFlashSaleById($flashSale->getFlashSalesId());
+            }
+        }
+        return $flashSalesData;
     }
 }
