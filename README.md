@@ -1,13 +1,9 @@
 # Mage2 Module Lof FlashSalesGraphQl
 
-    ``lof/module-flashsalesgraphql``
+    ``landofcoder/module-flashsales-graph-ql``
 
  - [Main Functionalities](#markdown-header-main-functionalities)
  - [Installation](#markdown-header-installation)
- - [Configuration](#markdown-header-configuration)
- - [Specifications](#markdown-header-specifications)
- - [Attributes](#markdown-header-attributes)
-
 
 ## Main Functionalities
 Magento 2 flashsales graphql module
@@ -29,13 +25,9 @@ Magento 2 flashsales graphql module
     - public repository `packagist.org`
     - public github repository as vcs
  - Add the composer repository to the configuration by running `composer config repositories.repo.magento.com composer https://repo.magento.com/`
- - Install the module composer by running `composer require lof/module-flashsalesgraphql`
+ - Install the module composer by running `composer require landofcoder/module-flashsales-graph-ql`
  - enable the module by running `php bin/magento module:enable Lof_FlashsalesGraphQl`
  - apply database updates by running `php bin/magento setup:upgrade`\*
  - Flush the cache by running `php bin/magento cache:flush`
-
-
-## Attributes
-
 
 
