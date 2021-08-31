@@ -13,7 +13,6 @@
         "AFL-3.0"
     ],
     "require": {
-        "landofcoder/module-flashsales": "*"
     },
     "autoload": {
         "files": [
