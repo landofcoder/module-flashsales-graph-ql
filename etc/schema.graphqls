@@ -1,15 +1,15 @@
 #@copyright Copyright © 2021 Landofcoder. All rights reserved.
 #@author    landofcoder@gmail.com
 type Query {
-    lofFlashSalesById(
+    flashSale(
         flashsales_id: Int @doc(description: "Flash sale Id of the Flash Sale")
     ): FlashSale @resolver(class: "\\Lof\\FlashSalesGraphQl\\Model\\Resolver\\FlashSaleById") @doc(description: "The Flash sale query returns information about Flash sale")
 
-    lofFlashSales(
+    flashSales(
         filter: FlashSaleFilterInput @doc(description: "Identifies which question attributes to search for and return."),
         pageSize: Int = 5 @doc(description: "Specifies the maximum number of results to return at once. This attribute is optional."),
         currentPage: Int = 1 @doc(description: "Specifies which page of results to return. The default value is 1."),
-    ):FlashSales @resolver(class: "\\Lof\\FlashSalesGraphQl\\Model\\Resolver\\FlashSales") @doc(description: "The Flash sales query searches for Flash sales that match the criteria specified in the search and filter attributes")
+    ): FlashSales @resolver(class: "\\Lof\\FlashSalesGraphQl\\Model\\Resolver\\FlashSales") @doc(description: "The Flash sales query searches for Flash sales that match the criteria specified in the search and filter attributes")
 }
 
 type FlashSale @doc(description: "Flash Sale defines all Flash Sale information") {
