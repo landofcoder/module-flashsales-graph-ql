@@ -1,5 +1,10 @@
 #@copyright Copyright © 2021 Landofcoder. All rights reserved.
 #@author    landofcoder@gmail.com
+
+type StoreConfig {
+ lofflashsale_category_id  : String  @doc(description: "Query by lofflashsale_category_id.")
+}
+
 type Query {
     flashSale(
         flashsales_id: Int @doc(description: "Flash sale Id of the Flash Sale")
